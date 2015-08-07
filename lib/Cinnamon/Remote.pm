@@ -12,11 +12,11 @@ use Cinnamon::Logger;
 sub connection {
     my $self = shift;
     return Net::OpenSSH->new(
-        $self->{host}, user => $self->{user},
+        $self->host, user => $self->user,
     );
 }
 
-sub host { $_[0]->{host} }
+has [qw/user host/] => ( is => 'ro' );
 
 sub execute {
     my ($self, $commands, $opts) = @_;
@@ -35,7 +35,7 @@ sub execute {
         print $stdin "$opts->{password}\n";
     }
 
-    my $hm = Cinnamon::HandleManager->new(host => $self->{host});
+    my $hm = Cinnamon::HandleManager->new(host => $self->host);
     $hm->register_fh(stdout => $stdout);
     $hm->register_fh(stderr => $stderr);
     $hm->start_async_read();
